@@ -218,6 +218,4 @@ __marimo__/
 .streamlit/secrets.toml
 
 # own generated data
-data_lake/bronze/*
-data_lake/silver/*
-data_lake/gold/*
+data_lake/
