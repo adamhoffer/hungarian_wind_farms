@@ -262,6 +262,6 @@ def process_gold():
 
 if __name__ == "__main__":
 
-    # fetch_and_save_bronze()
-    # process_silver()
+    fetch_and_save_bronze()
+    process_silver()
     process_gold()
