@@ -1,6 +1,3 @@
-import logging
-from datetime import datetime
-
 import os
 import main
 
@@ -8,24 +5,6 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-
-
-
-# LOGGING
-# 1) log setup
-logging.basicConfig(
-    filename='dashboard_access.log',
-    level=logging.INFO,
-    encoding='utf-8'
-)
-
-# 2) get log info
-user_agent = st.context.headers.get("User-Agent", "Ismeretlen eszköz")
-time_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-# 3) write into logfile
-logging.info(f"[{time_now}] Új megtekintés! Eszköz: {user_agent}")
-
 
 # GET DATA
 if not os.path.exists("data_lake/gold/gold_power_forecast.parquet"):
@@ -37,7 +16,7 @@ if not os.path.exists("data_lake/gold/gold_power_forecast.parquet"):
 
 # SET PAGE
 st.set_page_config(page_title="Magyar Szélerőmű Előrejelzés", layout="wide")
-st.title("💨 Magyarországi Szélerőmű Parkok - 7 Napos Termelés-előrejelzés")
+st.title("Magyarországi Szélerőművek - 7 Napos Termelés-előrejelzés")
 
 
 # Gold adatok beolvasása
@@ -51,15 +30,15 @@ df = load_data()
 
 # 1. Szűrő a szélerőművekre
 selected_farms = st.multiselect(
-    "Válassz ki szélerőműveket az elemzéshez:",
-    options=df["location_name_list"].unique(),
-    default=df["location_name_list"].unique()[:4]
+    "Válassz ki településeket az elemzéshez:",
+    options=df["location_name"].unique(),
+    default=df["location_name"].unique()[:4]
 )
 
-filtered_df = df[df["location_name_list"].isin(selected_farms)]
+filtered_df = df[df["location_name"].isin(selected_farms)]
 
 if filtered_df.empty:
-    st.warning("Kérlek, válassz ki legalább egy szélerőművet!")
+    st.warning("Kérlek, válassz ki legalább egy települést!")
 else:
     # 2. Összesített idősor kiszámítása (Időpont szerint szummázzuk a kiválasztottakat)
     total_power_df = (
@@ -70,9 +49,9 @@ else:
 
     # 3. KPI kártyák dinamikusan a kiválasztott parkokra
     col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Kiválasztott Parkok", f"{filtered_df['turbine_id'].nunique()} db")
+    col1.metric("Tornyok száma", f"{filtered_df['tower_id'].nunique()} db")
 
-    selected_max_cap = filtered_df.groupby('turbine_id')['max_capacity_mw'].first().sum()
+    selected_max_cap = filtered_df.groupby('tower_id')['rated_power_mw'].first().sum()
     col2.metric("Kiválasztott Beépített Kapacitás", f"{selected_max_cap:.1f} MW")
 
     max_total_power = total_power_df["estimated_power_mw"].max()
@@ -89,12 +68,12 @@ else:
         filtered_df,
         x="forecast_time",
         y="estimated_power_mw",
-        color="location_name_list",
+        color="location_name",
         title="Becsült Áramtermelés (MW) az elkövetkező 7 napban",
         labels={
             "forecast_time": "Időpont",
             "estimated_power_mw": "Becsült Termelés (MW)",
-            "location_name_list": "Helyszín"
+            "location_name": "Helyszín"
         }
     )
 
