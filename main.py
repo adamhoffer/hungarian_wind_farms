@@ -11,7 +11,6 @@ import numpy as np
 import ast
 
 
-
 # Folder setup
 BRONZE_DIR = "data_lake/bronze"
 SILVER_DIR = "data_lake/silver"
@@ -47,7 +46,7 @@ def fetch_and_save_bronze():
     # HTTP link összeállítása
     latitudes = ",".join(lat_list)
     longitudes = ",".join(lon_list)
-    api_url = f"""https://api.open-meteo.com/v1/forecast?latitude={latitudes}&longitude={longitudes}&hourly=windspeed_80m&wind_speed_unit=ms&timezone=auto"""
+    api_url = f"""https://api.open-meteo.com/v1/forecast?latitude={latitudes}&longitude={longitudes}&hourly=windspeed_80m&wind_speed_unit=ms&timezone=Europe%2FBerlin"""
 
 
     # időjárásadatok lekérése
