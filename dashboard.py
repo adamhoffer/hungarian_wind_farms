@@ -32,7 +32,7 @@ df = load_data()
 selected_farms = st.multiselect(
     "Válassz ki településeket az elemzéshez:",
     options=df["location_name"].unique(),
-    default=df["location_name"].unique()[:4]
+    default=df["location_name"].unique()[:]
 )
 
 filtered_df = df[df["location_name"].isin(selected_farms)]
