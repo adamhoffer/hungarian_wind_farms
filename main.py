@@ -148,6 +148,8 @@ def process_gold():
         sql_query= ("SELECT tow.tower_id AS tower_id,\
                             turb.turbine_type_name,\
                             tow.location_name,\
+                            tow.longitude,\
+                            tow.latitude,\
                             tow.operator_or_licensee,\
                             turb.rated_power_mw,\
                             turb.cut_in_windspeed_mps,\
